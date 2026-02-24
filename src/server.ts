@@ -11,7 +11,7 @@ app.use(userRoutes);
 AppDataSource.initialize()
     .then(() => {
         app.listen(3000, () => {
-            console.log("🚀 Server started on http://localhost:3000");
+            console.log("Server started");
         });
     })
-    .catch((error) => console.log("❌ Database error:", error));
+    .catch((error) => console.log("Database error:", error));
