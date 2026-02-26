@@ -1,33 +1,32 @@
-import { Request, Response } from "express";
+import { Controller, Get, Post, Patch, Delete, Param, Body } from "routing-controllers";
 import { UserService } from "../services/user.service";
 
-const userService = new UserService();
-
+@Controller()
 export class UserController {
-    static async getAuthor(_: Request, res: Response){
-        res.json({ author: "Me" })
+    private userService = new UserService();
+
+    @Get("/")
+    getAuthor() {
+        return { author: "Me" };
     }
 
-    static async getAll(_: Request, res: Response){
-        const users = await userService.getAllUsers();
-        res.json(users)
+    @Get("/users")
+    getAll() {
+        return this.userService.getAllUsers();
     }
 
-    static async create(req: Request, res: Response){
-        const { username, email } = req.body
-        const newUser = await userService.createUser(username, email)
-        res.status(201).json(newUser);
+    @Post("/users")
+    create(@Body() body: { username: string; email: string }) {
+        return this.userService.createUser(body.username, body.email);
     }
 
-    static async update(req: Request, res: Response){
-        const { id } = req.params
-        const { username, email } = req.body
-        const updatedUser = await userService.updateUser(id as string, username, email)
-        res.json(updatedUser)
+    @Patch("/users/:id")
+    update(@Param("id") id: string, @Body() body: { username: string; email: string }) {
+        return this.userService.updateUser(id, body.username, body.email);
     }
 
-    static async delete(req: Request, res: Response){
-        await userService.deleteUser(req.params.id);
-        res.json({ message: "User deleted" });
+    @Delete("/users/:id")
+    remove(@Param("id") id: string) {
+        return this.userService.deleteUser(id);
     }
 }

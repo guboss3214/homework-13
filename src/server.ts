@@ -1,15 +1,14 @@
 import "reflect-metadata";
-import express from "express";
+import { createExpressServer } from "routing-controllers";
 import { AppDataSource } from "./ormconfig";
-import userRoutes from "./routes/user.routes";
-
-const app = express();
-app.use(express.json());
-
-app.use(userRoutes);
+import { UserController } from "./controllers/user.controller";
 
 AppDataSource.initialize()
     .then(() => {
+        const app = createExpressServer({
+            controllers: [UserController],
+        });
+
         app.listen(3000, () => {
             console.log("Server started");
         });
