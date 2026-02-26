@@ -1,16 +1,23 @@
 import "reflect-metadata";
-import { createExpressServer } from "routing-controllers";
+import express from "express";
+import { useExpressServer } from "routing-controllers";
 import { AppDataSource } from "./ormconfig";
 import { UserController } from "./controllers/user.controller";
 
+const PORT = 5000;
+
 AppDataSource.initialize()
     .then(() => {
-        const app = createExpressServer({
+        const app = express();
+        app.use(express.json());
+
+        useExpressServer(app, {
             controllers: [UserController],
+            classTransformer: false,
         });
 
-        app.listen(3000, () => {
-            console.log("Server started");
+        app.listen(PORT, () => {
+            console.log(`Server started on PORT: ${PORT}`);
         });
     })
     .catch((error) => console.log("Database error:", error));
